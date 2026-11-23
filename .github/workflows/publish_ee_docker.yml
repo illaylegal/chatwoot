@@ -23,6 +23,8 @@ permissions:
 
 jobs:
   build:
+    # Upstream's Docker Hub image; forks publish their own (publish_arkos_image.yml)
+    if: github.repository == 'chatwoot/chatwoot'
     strategy:
       fail-fast: false
       matrix:
@@ -94,6 +96,8 @@ jobs:
           retention-days: 1
 
   merge:
+    # Upstream's Docker Hub image; forks publish their own (publish_arkos_image.yml)
+    if: github.repository == 'chatwoot/chatwoot'
     runs-on: ubuntu-latest
     needs:
       - build

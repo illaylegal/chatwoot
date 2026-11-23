@@ -9,6 +9,7 @@ import SettingsToggleSection from 'dashboard/components-next/Settings/SettingsTo
 import SettingsAccordion from 'dashboard/components-next/Settings/SettingsAccordion.vue';
 import ImapSettings from '../ImapSettings.vue';
 import SmtpSettings from '../SmtpSettings.vue';
+import KnownContactsOnlySettings from '../KnownContactsOnlySettings.vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import NextButton from 'dashboard/components-next/button/Button.vue';
@@ -25,6 +26,7 @@ export default {
     SettingsAccordion,
     ImapSettings,
     SmtpSettings,
+    KnownContactsOnlySettings,
     NextButton,
     Banner,
     TextArea,
@@ -413,6 +415,7 @@ export default {
         </div>
       </SettingsFieldSection>
     </div>
+    <KnownContactsOnlySettings :inbox="inbox" />
     <ImapSettings :inbox="inbox" />
     <SmtpSettings :inbox="inbox" />
   </div>

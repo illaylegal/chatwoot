@@ -11,9 +11,14 @@ RSpec.describe Imap::ImapMailbox do
     let!(:contact) { create(:contact, email: 'email@gmail.com', phone_number: '+919584546666', account: account, identifier: '123') }
     let(:conversation) { Conversation.where(inbox_id: channel.inbox).last }
     let(:class_instance) { described_class.new }
+    let(:mail_subject) { 'Hi' }
 
     before do
       create(:contact_inbox, contact_id: contact.id, inbox_id: channel.inbox.id)
+    end
+
+    def inbound_mail(**addresses)
+      create_inbound_email_from_mail(subject: mail_subject, **addresses).mail
     end
 
     context 'when the email is from a new contact' do
@@ -27,6 +32,50 @@ RSpec.describe Imap::ImapMailbox do
         expect(conversation.contact.email).to eq(inbound_mail.mail.from.first)
         expect(conversation.additional_attributes['source']).to eq('email')
         expect(conversation.messages.empty?).to be false
+      end
+    end
+
+    context 'when the inbox takes only known contacts mail' do
+      let(:known_contact) { create(:contact, email: 'client@example.org', account: channel.account) }
+
+      before { channel.update!(known_contacts_only: true) }
+
+      it 'skips mail whose sender and recipients are not contacts' do
+        mail = inbound_mail(from: 'stranger@example.org', to: channel.email, cc: 'other@example.org')
+
+        expect { class_instance.process(mail, channel) }.not_to change(Message, :count)
+        expect(account_contact_emails).not_to include('stranger@example.org')
+      end
+
+      it 'keeps mail sent by a known contact' do
+        mail = inbound_mail(from: known_contact.email, to: channel.email)
+
+        expect { class_instance.process(mail, channel) }.to change(Message, :count).by(1)
+      end
+
+      it 'keeps mail that copies a known contact, whatever the case of the address' do
+        mail = inbound_mail(from: 'colleague@example.org', to: channel.email, cc: known_contact.email.upcase)
+
+        expect { class_instance.process(mail, channel) }.to change(Message, :count).by(1)
+      end
+
+      it 'does not count the mailbox own address as a contact' do
+        create(:contact, email: channel.email, account: channel.account)
+        mail = inbound_mail(from: 'stranger@example.org', to: channel.email)
+
+        expect { class_instance.process(mail, channel) }.not_to change(Message, :count)
+      end
+
+      def account_contact_emails
+        channel.account.contacts.pluck(:email)
+      end
+    end
+
+    context 'when the inbox takes all mail' do
+      it 'creates a conversation for an unknown sender' do
+        mail = inbound_mail(from: 'stranger@example.org', to: channel.email)
+
+        expect { class_instance.process(mail, channel) }.to change(Message, :count).by(1)
       end
     end
 

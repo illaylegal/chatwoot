@@ -12,6 +12,7 @@
 #  imap_login                :string           default("")
 #  imap_password             :string           default("")
 #  imap_port                 :integer          default(0)
+#  known_contacts_only       :boolean          default(FALSE), not null
 #  provider                  :string
 #  provider_config           :jsonb
 #  smtp_address              :string           default("")
@@ -50,7 +51,8 @@ class Channel::Email < ApplicationRecord
   self.table_name = 'channel_email'
   EDITABLE_ATTRS = [:email, :imap_enabled, :imap_login, :imap_password, :imap_address, :imap_port, :imap_enable_ssl, :imap_authentication,
                     :smtp_enabled, :smtp_login, :smtp_password, :smtp_address, :smtp_port, :smtp_domain, :smtp_enable_starttls_auto,
-                    :smtp_enable_ssl_tls, :smtp_openssl_verify_mode, :smtp_authentication, :provider, :verified_for_sending].freeze
+                    :smtp_enable_ssl_tls, :smtp_openssl_verify_mode, :smtp_authentication, :provider, :verified_for_sending,
+                    :known_contacts_only].freeze
 
   validates :email, uniqueness: true
   validates :forward_to_email, uniqueness: true
