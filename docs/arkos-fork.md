@@ -28,7 +28,7 @@ Upstream 4.20.1 (`VERSION_CW`).
 | Change | Where | Why |
 | --- | --- | --- |
 | "Known contacts only" email inboxes | `Channel::Email#known_contacts_only`, `Imap::ImapMailbox#skipped_as_unknown_contacts_mail?`, inbox settings page | An operator's private mailbox is synced into an inbox, and only mail from, to or copying an address already on file may be stored. Stock IMAP sync stores every message. L'Eina keeps Chatwoot contacts in step with the addresses on file. |
-| Own container image | `.github/workflows/publish_arkos_image.yml`; upstream's Docker Hub workflows only run in `chatwoot/chatwoot` | L'Eina deploys this repository's code, not upstream's image. |
+| Own container image | `.github/workflows/publish_arkos_image.yml`; upstream's Docker Hub workflows and the Heroku review-app check (`deploy_check.yml`) only run in `chatwoot/chatwoot` | L'Eina deploys this repository's code, not upstream's image. |
 
 ## Container image
 
