@@ -1630,6 +1630,13 @@
       "ENABLE_SSL": "Enable SSL",
       "AUTH_MECHANISM": "Authentication"
     },
+    "KNOWN_CONTACTS_ONLY": {
+      "TITLE": "Known contacts only",
+      "HELP_TEXT": "Use this for a person's own mailbox. Email is brought into this inbox only when its sender or one of its To or Cc recipients is already a contact. Everything else stays in the mailbox and is never stored here.",
+      "TOGGLE_LABEL": "Bring in only email exchanged with existing contacts",
+      "SUCCESS_MESSAGE": "Known contacts setting updated",
+      "ERROR_MESSAGE": "Unable to update the known contacts setting"
+    },
     "MICROSOFT": {
       "TITLE": "Microsoft",
       "SUBTITLE": "Reauthorize your MICROSOFT account"

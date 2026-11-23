@@ -1,5 +1,7 @@
 # Chatwoot Development Guidelines
 
+> **ARKOS fork:** read [docs/arkos-fork.md](docs/arkos-fork.md) first. It lists the fork changes and replaces the Linear rule below for this repository.
+
 `CLAUDE.md` is a symlink to this file. Keep shared, repository-wide instructions here and detailed procedures in linked docs. Add nested `AGENTS.md` files only for subtree-specific differences; avoid duplicating root rules.
 
 ## Build, Test, and Lint

@@ -1046,6 +1046,20 @@ RSpec.describe 'Inboxes API', type: :request do
         expect(email_channel.reload.imap_authentication).to eq('login')
       end
 
+      it 'turns on taking only known contacts mail when administrator' do
+        email_channel = create(:channel_email, account: account)
+        email_inbox = create(:inbox, channel: email_channel, account: account)
+
+        patch "/api/v1/accounts/#{account.id}/inboxes/#{email_inbox.id}",
+              headers: admin.create_new_auth_token,
+              params: { channel: { known_contacts_only: true } },
+              as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(email_channel.reload.known_contacts_only).to be true
+        expect(response.parsed_body['known_contacts_only']).to be true
+      end
+
       it 'updates avatar when administrator' do
         # no avatar before upload
         expect(inbox.avatar.attached?).to be(false)

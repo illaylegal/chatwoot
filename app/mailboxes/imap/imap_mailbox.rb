@@ -16,6 +16,7 @@ class Imap::ImapMailbox
 
     # Skip processing email if it belongs to any of the edge cases
     return unless incoming_email_from_valid_email?
+    return if skipped_as_unknown_contacts_mail?
 
     ActiveRecord::Base.transaction do
       next if duplicate_email?
@@ -28,6 +29,20 @@ class Imap::ImapMailbox
   end
 
   private
+
+  # A person's own mailbox synced into an inbox brings only mail exchanged with a known contact
+  def skipped_as_unknown_contacts_mail?
+    return false unless @channel.known_contacts_only?
+    return false if @account.contacts.exists?(email: mail_participant_addresses)
+
+    Rails.logger.info("Skipping email with no known contact : inbox #{@inbox.id} : message_id #{@processed_mail.message_id}")
+    true
+  end
+
+  def mail_participant_addresses
+    addresses = [original_sender_email] + Array.wrap(@inbound_mail.to) + Array.wrap(@inbound_mail.cc)
+    addresses.compact_blank.map(&:downcase).uniq - [@channel.email.downcase]
+  end
 
   def load_account
     @account = @channel.account
